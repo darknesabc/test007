@@ -258,23 +258,35 @@
         let moveList = [];
 
         function refreshMoveList() {
-            const tableBody = document.querySelector("#moveList tbody");
-            tableBody.innerHTML = "";
-
-            moveList.forEach((moveData) => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${moveData.building}</td>
-                    <td>${moveData.seatNumber}</td>
-                    <td>${moveData.returnTime}교시</td>
-                    <td>${moveData.reason}</td>
-                    <td>${moveData.inputDate}</td>
-                    <td>${moveData.inputTime}</td>
-                    <td>${moveData.score || '-'}</td>
-                `;
-                tableBody.appendChild(row);
-            });
+    // inputTime을 기준으로 내림차순 정렬
+    moveList.sort((a, b) => {
+        if (a.inputTime > b.inputTime) {
+            return -1;  // a가 b보다 나중에 제출된 경우 (내림차순)
         }
+        if (a.inputTime < b.inputTime) {
+            return 1;   // a가 b보다 먼저 제출된 경우
+        }
+        return 0;  // 동일한 시간이면 변경 없음
+    });
+
+    const tableBody = document.querySelector("#moveList tbody");
+    tableBody.innerHTML = "";
+
+    moveList.forEach((moveData) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${moveData.building}</td>
+            <td>${moveData.seatNumber}</td>
+            <td>${moveData.returnTime}교시</td>
+            <td>${moveData.reason}</td>
+            <td>${moveData.inputDate}</td>
+            <td>${moveData.inputTime}</td>
+            <td>${moveData.score || '-'}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
 
         document.getElementById("moveForm").addEventListener("submit", function (event) {
     event.preventDefault();
