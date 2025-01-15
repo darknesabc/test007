@@ -112,6 +112,10 @@
             color: red;
             margin-top: 10px;
         }
+
+        .score {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -214,6 +218,17 @@
             <option value="원내 대화">원내 대화</option>
         </select><br />
 
+        <div id="scoreDiv" class="score">
+            <label for="score">점수 (1~5점):</label>
+            <select id="score">
+                <option value="1">1점</option>
+                <option value="2">2점</option>
+                <option value="3">3점</option>
+                <option value="4">4점</option>
+                <option value="5">5점</option>
+            </select><br />
+        </div>
+
         <label for="otherReason" id="otherReasonLabel" style="display:none;">기타 사유:</label>
         <textarea id="otherReason" placeholder="기타 사유를 입력하세요" style="display:none; width: 100%; height: 100px; resize: vertical;"></textarea>
 
@@ -230,6 +245,7 @@
                     <th>이동사유</th>
                     <th>입력날짜</th>
                     <th>입력시간</th>
+                    <th>점수</th>
                 </tr>
             </thead>
             <tbody>
@@ -255,6 +271,7 @@
                     <td>${moveData.reason}</td>
                     <td>${moveData.inputDate}</td>
                     <td>${moveData.inputTime}</td>
+                    <td>${moveData.score || '-'}</td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -268,6 +285,7 @@
             const returnTime = document.getElementById("returnTime").value;
             const reason = document.getElementById("reason").value;
             const otherReason = document.getElementById("otherReason").value;
+            const score = document.getElementById("score").value;
 
             if (reason === "기타" && !otherReason.trim()) {
                 document.getElementById("errorMessage").style.display = "block";
@@ -280,7 +298,8 @@
                 building: building,
                 seatNumber: seatNumber,
                 returnTime: returnTime,
-                reason: reason === "기타" ? otherReason : reason // "기타"일 경우 입력된 기타 사유 사용
+                reason: reason === "기타" ? otherReason : reason,
+                score: ["핸드폰 미제출", "전자기기 사용", "핸드폰 무단사용", "타층/타관 무단출입", "무단결석/무단이탈", "원내 대화"].includes(reason) ? score : null
             };
 
             const now = new Date();
@@ -292,6 +311,7 @@
             refreshMoveList();
 
             document.getElementById("moveForm").reset();
+            document.getElementById("scoreDiv").style.display = "none";
             document.getElementById("otherReason").style.display = "none";
             document.getElementById("otherReasonLabel").style.display = "none";
 
@@ -301,8 +321,13 @@
             });
         });
 
-        // "기타" 이동사유 선택 시 사유 입력 필드 표시
         document.getElementById("reason").addEventListener("change", function() {
+            if (["핸드폰 미제출", "전자기기 사용", "핸드폰 무단사용", "타층/타관 무단출입", "무단결석/무단이탈", "원내 대화"].includes(this.value)) {
+                document.getElementById("scoreDiv").style.display = "block";
+            } else {
+                document.getElementById("scoreDiv").style.display = "none";
+            }
+
             if (this.value === "기타") {
                 document.getElementById("otherReason").style.display = "block";
                 document.getElementById("otherReasonLabel").style.display = "block";
@@ -319,14 +344,4 @@
         }
     </script>
 </body>
-</html>
-
-
-
-
-
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
-    <script>anchors.add();</script>
-  </body>
 </html>
