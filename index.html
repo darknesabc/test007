@@ -306,10 +306,10 @@
         document.getElementById("errorMessage").style.display = "none";
     }
 
-    // 날짜와 시간 설정
+    // 날짜와 시간 설정 (초 단위까지)
     const now = new Date();
     const inputDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    const inputTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const inputTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
 
     const moveData = {
         building: building,
@@ -356,6 +356,7 @@
     }
 });
 
+// 테이블에 데이터 표시하는 함수 (초 단위까지 반영)
 function refreshMoveList() {
     const tableBody = document.querySelector("#moveList tbody");
     tableBody.innerHTML = "";
@@ -374,6 +375,7 @@ function refreshMoveList() {
         tableBody.appendChild(row);
     });
 }
+
 
 
 
