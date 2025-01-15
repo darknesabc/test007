@@ -287,6 +287,7 @@
     const otherReason = document.getElementById("otherReason").value;
     const score = document.getElementById("score").value;
 
+    // 기타 사유가 비어있는지 체크
     if (reason === "기타" && !otherReason.trim()) {
         document.getElementById("errorMessage").style.display = "block";
         return;
@@ -294,12 +295,19 @@
         document.getElementById("errorMessage").style.display = "none";
     }
 
+    // 날짜와 시간 설정
+    const now = new Date();
+    const inputDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const inputTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
     const moveData = {
         building: building,
         seatNumber: seatNumber,
         returnTime: returnTime,
         reason: reason === "기타" ? otherReason : reason,
-        score: ["핸드폰 미제출", "전자기기 사용", "핸드폰 무단사용", "타층/타관 무단출입", "무단결석/무단이탈", "원내 대화"].includes(reason) ? score : null
+        score: ["핸드폰 미제출", "전자기기 사용", "핸드폰 무단사용", "타층/타관 무단출입", "무단결석/무단이탈", "원내 대화"].includes(reason) ? score : null,
+        inputDate: inputDate,
+        inputTime: inputTime
     };
 
     // 동일한 사유가 점수에 따라 여러 번 추가되도록 처리
@@ -307,10 +315,6 @@
         const duplicatedMoveData = { ...moveData, score: moveData.score };  // 점수를 기준으로 복제
         moveList.push(duplicatedMoveData);
     }
-
-    const now = new Date();
-    moveData.inputDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    moveData.inputTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
     refreshMoveList();
 
@@ -324,6 +328,26 @@
         body: JSON.stringify(moveData)
     });
 });
+
+function refreshMoveList() {
+    const tableBody = document.querySelector("#moveList tbody");
+    tableBody.innerHTML = "";
+
+    moveList.forEach((moveData) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${moveData.building}</td>
+            <td>${moveData.seatNumber}</td>
+            <td>${moveData.returnTime}교시</td>
+            <td>${moveData.reason}</td>
+            <td>${moveData.inputDate}</td>
+            <td>${moveData.inputTime}</td>
+            <td>${moveData.score || '-'}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
 
 
         document.getElementById("reason").addEventListener("change", function() {
