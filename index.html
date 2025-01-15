@@ -208,26 +208,27 @@
             });
         }
 
-        document.getElementById("moveForm").addEventListener("submit", function (event) {
-            event.preventDefault();
+       document.getElementById("moveForm").addEventListener("submit", function (event) {
+    event.preventDefault();
 
-            const building = document.getElementById("building").value;
-            const seatNumber = document.getElementById("seatNumber").value + document.getElementById("seatNumber2").value;
-            const returnTime = document.getElementById("returnTime").value;
-            const reason = document.getElementById("reason").value;
-            const repeatCount = document.getElementById("repeatCount").value || 1;
-            const otherReason = document.getElementById("otherReason").value;
+    const building = document.getElementById("building").value;
+    const seatNumber = document.getElementById("seatNumber").value + document.getElementById("seatNumber2").value;
+    const returnTime = document.getElementById("returnTime").value;
+    const reason = document.getElementById("reason").value;
+    const repeatCount = parseInt(document.getElementById("repeatCount").value) || 1; // 숫자 형식으로 처리
+    const otherReason = document.getElementById("otherReason").value;
 
-            if (reason === "기타" && !otherReason.trim()) {
-                document.getElementById("errorMessage").style.display = "block";
-                return;
-            } else {
-                document.getElementById("errorMessage").style.display = "none";
-            }
+    // "기타" 선택 시 기타 사유가 비어있다면 에러 메시지 표시
+    if (reason === "기타" && !otherReason.trim()) {
+        document.getElementById("errorMessage").style.display = "block";
+        return;
+    } else {
+        document.getElementById("errorMessage").style.display = "none";
+    }
 
-             let moveDataList = [];  // 여러 데이터 객체를 담을 배열
+    let moveDataList = [];  // 여러 데이터 객체를 담을 배열
 
-            for (let i = 0; i < repeatCount; i++) {
+    for (let i = 0; i < repeatCount; i++) {
         const moveData = {
             building: building,
             seatNumber: seatNumber,
@@ -239,23 +240,25 @@
         moveData.inputDate = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
         moveData.inputTime = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-        moveDataList.push(moveData);  // moveData를 배열에 추가
+        moveDataList.push(moveData);  // 배열에 추가
     }
 
-    // 여러 건의 데이터를 한 번에 전송
+    // moveDataList 배열을 JSON 형태로 서버에 전송
     fetch('https://script.google.com/macros/s/AKfycbwMm1kYD4_RmxI1wU-dGJVCO-3C_Es9sQKFKn-VXN82r39WdohWw3rPdsJHQjV8F-A_/exec', {
         method: 'POST',
         body: JSON.stringify(moveDataList)  // 배열을 서버에 전송
     });
 
-    moveList.push(...moveDataList);  // UI에 추가
+    moveList.push(...moveDataList);  // UI에 여러 건의 데이터 추가
     refreshMoveList();
 
+    // 폼 리셋 후 기타 사유와 반복 횟수 관련 UI 숨김
     document.getElementById("moveForm").reset();
     document.getElementById("otherReason").style.display = "none";
     document.getElementById("otherReasonLabel").style.display = "none";
     document.getElementById("repeatCount").style.display = "none";
     document.getElementById("repeatCountLabel").style.display = "none";
+});
 
             fetch('https://script.google.com/macros/s/AKfycbwMm1kYD4_RmxI1wU-dGJVCO-3C_Es9sQKFKn-VXN82r39WdohWw3rPdsJHQjV8F-A_/exec', {
                 method: 'POST',
