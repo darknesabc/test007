@@ -327,7 +327,18 @@
         moveList.push(duplicatedMoveData);
     }
 
-    refreshMoveList();
+    // 테이블 내림차순 정렬 후 갱신
+    moveList.sort((a, b) => {
+        if (a.inputTime > b.inputTime) {
+            return -1;  // a가 b보다 나중에 제출된 경우 (내림차순)
+        }
+        if (a.inputTime < b.inputTime) {
+            return 1;   // a가 b보다 먼저 제출된 경우
+        }
+        return 0;  // 동일한 시간이면 변경 없음
+    });
+
+    refreshMoveList();  // 데이터 갱신
 
     document.getElementById("moveForm").reset();
     document.getElementById("scoreDiv").style.display = "none";
@@ -344,8 +355,6 @@
         }, i * 2000);  // 2초 간격으로 전송
     }
 });
-
-
 
 function refreshMoveList() {
     const tableBody = document.querySelector("#moveList tbody");
@@ -365,6 +374,7 @@ function refreshMoveList() {
         tableBody.appendChild(row);
     });
 }
+
 
 
 
