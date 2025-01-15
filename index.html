@@ -323,11 +323,15 @@
     document.getElementById("otherReason").style.display = "none";
     document.getElementById("otherReasonLabel").style.display = "none";
 
-    fetch('https://script.google.com/macros/s/AKfycbwMm1kYD4_RmxI1wU-dGJVCO-3C_Es9sQKFKn-VXN82r39WdohWw3rPdsJHQjV8F-A_/exec', {
-        method: 'POST',
-        body: JSON.stringify(moveData)
-    });
+    // 점수만큼 데이터를 중복시켜 서버로 전송
+    for (let i = 0; i < parseInt(score); i++) {
+        fetch('https://script.google.com/macros/s/AKfycbwMm1kYD4_RmxI1wU-dGJVCO-3C_Es9sQKFKn-VXN82r39WdohWw3rPdsJHQjV8F-A_/exec', {
+            method: 'POST',
+            body: JSON.stringify(moveData)
+        });
+    }
 });
+
 
 function refreshMoveList() {
     const tableBody = document.querySelector("#moveList tbody");
