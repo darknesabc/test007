@@ -257,6 +257,7 @@
                     <th>이동사유</th>
                     <th>입력날짜</th>
                     <th>입력시간</th>
+                    <th점수</th>
                 </tr>
             </thead>
             <tbody>
@@ -344,7 +345,7 @@
                 method: 'POST',
                 body: JSON.stringify(moveData)
             });
-        }, i * 3000);  // 2초 간격으로 전송
+        }, i * 3000);  // 3초 간격으로 전송
     }
 });
 
@@ -372,9 +373,4 @@
     </script>
 </body>
 </html>
-
-
-
-
-
 
