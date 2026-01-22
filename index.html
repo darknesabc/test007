@@ -13,63 +13,106 @@
 
         h1 {
             color: #336699;
+            font-size: 24px;
         }
 
         form {
             display: inline-block;
             text-align: left;
             border: 1px solid #ccc;
-            padding: 10px;
+            padding: 20px;
             width: 100%;
             max-width: 500px;
             box-sizing: border-box;
+            background-color: #f9f9f9;
+            border-radius: 8px;
         }
 
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: bold;
         }
 
-        select {
+        select, textarea {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 12px; /* 더 큰 크기 */
+            margin-bottom: 15px;
             box-sizing: border-box;
-            font-size: 16px; /* 선택 박스 내 글자 크기 */
-            height: 40px; /* 선택 박스 높이 */
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
         }
 
         button {
-            padding: 8px 16px;
+            padding: 10px 20px;
             background-color: #336699;
             color: #fff;
             border: none;
             cursor: pointer;
             width: 100%;
             max-width: 120px;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #28597b;
         }
 
         #resetButton {
             margin: 10px 0;
             float: left;
             width: auto;
+            padding: 8px 16px;
+            background-color: #ccc;
+            cursor: pointer;
         }
 
         table {
             margin: 20px auto;
             border-collapse: collapse;
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         th, td {
             border: 1px solid #ccc;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
         }
 
         thead {
             background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-size: 18px;
+            display: none;
+        }
+
+        .score {
+            display: none;
         }
 
         @media (max-width: 768px) {
@@ -78,11 +121,16 @@
             }
 
             button {
-                max-width: 100%;
+                width: 100%;
             }
 
             table, th, td {
                 font-size: 14px;
+            }
+
+            select, textarea {
+                padding: 14px; /* 선택 칸 더 커짐 */
+                font-size: 18px; /* 글씨 크기 키움 */
             }
         }
 
@@ -95,43 +143,30 @@
                 font-size: 20px;
             }
 
-            form {
-                padding: 10px;
-            }
-
             select, button {
                 font-size: 14px;
             }
 
             th, td {
-                padding: 8px;
+                padding: 10px;
             }
-        }
-
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
-
-        .score {
-            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>러셀 이동일지 작성</h1>
+    <h1>러셀 이동일지&교육점수 작성</h1>
     <button id="resetButton" onclick="resetTable()">테이블 초기화</button>
     <form id="moveForm">
         <label for="building">관:</label>
-        <select id="building" required="true">
+        <select id="building" required>
             <option value="">선택하세요</option>
             <option value="5-1관">5-1관</option>
             <option value="5-2관">5-2관</option>
             <option value="5-3관">5-3관</option>
-        </select><br />
+        </select>
 
         <label for="seatNumber">좌석번호:</label>
-        <select id="seatNumber" required="true">
+        <select id="seatNumber" required>
             <option value="">선택하세요</option>
             <optgroup label="A~I">
                 <option value="A">A</option>
@@ -143,7 +178,7 @@
             </optgroup>
         </select>
 
-        <select id="seatNumber2" required="true">
+        <select id="seatNumber2" required>
             <option value="">선택하세요</option>
             <optgroup label="1~40">
                 <option value="01">01</option>
@@ -183,10 +218,10 @@
                 <option value="35">35</option>
                 <option value="36">36</option>
             </optgroup>
-        </select><br />
+        </select>
 
         <label for="returnTime">복귀교시:</label>
-        <select id="returnTime" required="true">
+        <select id="returnTime" required>
             <option value="">선택하세요</option>
             <option value="1">1교시</option>
             <option value="2">2교시</option>
@@ -199,10 +234,10 @@
             <option value="9">9교시</option>
             <option value="10">10교시</option>
             <option value="복귀안함">복귀안함</option>
-        </select><br />
+        </select>
 
         <label for="reason">이동사유:</label>
-        <select id="reason" required="true">
+        <select id="reason" required>
             <option value="">선택하세요</option>
             <option value="화장실/정수기">화장실/정수기</option>
             <option value="튜터 질의응답">튜터 질의응답</option>
@@ -218,12 +253,12 @@
             <option value="지각">지각</option>
             <option value="입/퇴실 미준수">입/퇴실 미준수</option>
             <option value="핸드폰 미제출">핸드폰 미제출</option>
-            <option value="전자기기 사용">전자기기 사용</option>
+            <option value="전자기기 무단사용">전자기기 무단사용</option>
             <option value="핸드폰 무단사용">핸드폰 무단사용</option>
             <option value="타층/타관 무단출입">타층/타관 무단출입</option>
             <option value="무단결석/무단이탈">무단결석/무단이탈</option>
             <option value="원내 대화">원내 대화</option>
-        </select><br />
+        </select>
 
         <div id="scoreDiv" class="score">
             <label for="score">점수 (1~10점):</label>
@@ -237,18 +272,18 @@
                 <option value="7">7점</option>
                 <option value="8">8점</option>
                 <option value="9">9점</option>
-                <option value="10">10점</option>                
-            </select><br />
+                <option value="10">10점</option>
+            </select>
         </div>
 
         <label for="otherReason" id="otherReasonLabel" style="display:none;">기타 사유:</label>
-        <textarea id="otherReason" placeholder="기타 사유를 입력하세요" style="display:none; width: 100%; height: 100px; resize: vertical;"></textarea>
+        <textarea id="otherReason" placeholder="기타 사유를 입력하세요" style="display:none; height: 100px;"></textarea>
 
         <button type="submit">제출</button>
     </form>
 
     <div id="result">
-        <table id="moveList" border="1">
+        <table id="moveList">
             <thead>
                 <tr>
                     <th>관</th>
@@ -257,11 +292,10 @@
                     <th>이동사유</th>
                     <th>입력날짜</th>
                     <th>입력시간</th>
-                    <th점수</th>
+                    <th>점수</th>
                 </tr>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 
@@ -338,19 +372,19 @@
             document.getElementById("otherReason").style.display = "none";
             document.getElementById("otherReasonLabel").style.display = "none";
 
-    // 점수만큼 데이터를 중복시켜 서버로 전송, 3초 간격으로 요청 보내기
-    for (let i = 0; i < parseInt(score); i++) {
-        setTimeout(() => {
-            fetch('https://script.google.com/macros/s/AKfycbyO3_XoamjQF9F7pRazW9L_3P0TqEGH1pg2373ifiob9GJKwfjqV35f0KF053NHElyz/exec', {
-                method: 'POST',
-                body: JSON.stringify(moveData)
-            });
-        }, i * 3000);  // 3초 간격으로 전송
-    }
-});
+            // 점수만큼 데이터를 중복시켜 서버로 전송, 3초 간격으로 요청 보내기
+            for (let i = 0; i < parseInt(score); i++) {
+                setTimeout(() => {
+                    fetch('https://script.google.com/macros/s/AKfycbyO3_XoamjQF9F7pRazW9L_3P0TqEGH1pg2373ifiob9GJKwfjqV35f0KF053NHElyz/exec', {
+                        method: 'POST',
+                        body: JSON.stringify(moveData)
+                    });
+                }, i * 3000);  // 3초 간격으로 전송
+            }
+        });
 
         document.getElementById("reason").addEventListener("change", function() {
-            if (["핸드폰 미제출", "전자기기 사용", "핸드폰 무단사용", "타층/타관 무단출입", "무단결석/무단이탈", "원내 대화"].includes(this.value)) {
+            if (["핸드폰 미제출", "전자기기 무단사용", "핸드폰 무단사용", "타층/타관 무단출입", "무단결석/무단이탈", "원내 대화"].includes(this.value)) {
                 document.getElementById("scoreDiv").style.display = "block";
             } else {
                 document.getElementById("scoreDiv").style.display = "none";
@@ -373,5 +407,4 @@
     </script>
 </body>
 </html>
-
 
