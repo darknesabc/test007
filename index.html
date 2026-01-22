@@ -348,30 +348,6 @@
     }
 });
 
-// 테이블에 데이터 표시하는 함수 (초 단위까지 반영)
-function refreshMoveList() {
-    const tableBody = document.querySelector("#moveList tbody");
-    tableBody.innerHTML = "";
-
-    moveList.forEach((moveData) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${moveData.building}</td>
-            <td>${moveData.seatNumber}</td>
-            <td>${moveData.returnTime}교시</td>
-            <td>${moveData.reason}</td>
-            <td>${moveData.inputDate}</td>
-            <td>${moveData.inputTime}</td>
-            <td>${moveData.score || '-'}</td>
-        `;
-        tableBody.appendChild(row);
-    });
-}
-
-
-
-
-
         document.getElementById("reason").addEventListener("change", function() {
             if (["핸드폰 미제출", "전자기기 사용", "핸드폰 무단사용", "타층/타관 무단출입", "무단결석/무단이탈", "원내 대화"].includes(this.value)) {
                 document.getElementById("scoreDiv").style.display = "block";
@@ -396,6 +372,7 @@ function refreshMoveList() {
     </script>
 </body>
 </html>
+
 
 
 
