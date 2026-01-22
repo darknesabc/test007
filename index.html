@@ -124,7 +124,9 @@
     <form id="moveForm">
         <label for="building">관:</label>
         <select id="building" required="true">
-            <option value="7-1관">7-1관</option>
+            <option value="5-1관">5-1관</option>
+            <option value="5-2관">5-2관</option>
+            <option value="5-3관">5-3관</option>
         </select><br />
 
         <label for="seatNumber">좌석번호:</label>
@@ -223,13 +225,18 @@
         </select><br />
 
         <div id="scoreDiv" class="score">
-            <label for="score">점수 (1~5점):</label>
+            <label for="score">점수 (1~20점):</label>
             <select id="score">
                 <option value="1">1점</option>
                 <option value="2">2점</option>
                 <option value="3">3점</option>
                 <option value="4">4점</option>
                 <option value="5">5점</option>
+                <option value="6">6점</option>
+                <option value="7">7점</option>
+                <option value="8">8점</option>
+                <option value="9">9점</option>
+                <option value="10">10점</option>                
             </select><br />
         </div>
 
@@ -408,3 +415,4 @@ function refreshMoveList() {
     </script>
 </body>
 </html>
+
