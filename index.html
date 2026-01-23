@@ -100,47 +100,17 @@
         .score {
             display: none;
         }
-
-        /* 커스텀 다이얼로그 스타일 */
-        #customDialog {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-            z-index: 1000;
+        @media (max-width: 768px) {
+            form { padding: 15px; }
+            button { width: 100%; }
+            table, th, td { font-size: 14px; }
+            select, textarea { padding: 14px; font-size: 18px; }
         }
-        #customDialog .dialogContent {
-            margin-bottom: 20px;
-        }
-        #customDialog button {
-            padding: 10px 20px;
-            background-color: #336699;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 0 10px;
-        }
-        #customDialog button:hover {
-            background-color: #28597b;
-        }
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
+        @media (max-width: 480px) {
+            body { margin: 10px; }
+            h1 { font-size: 20px; }
+            select, button { font-size: 14px; }
+            th, td { padding: 10px; }
         }
     </style>
 </head>
@@ -227,13 +197,34 @@
             <option value="복귀안함">복귀안함</option>
         </select>
 
+
         <label for="reason">이동사유:</label>
         <select id="reason" required>
             <option value="">선택하세요</option>
+            <option value="화장실/정수기">화장실/정수기</option>
+            <option value="튜터 질의응답">튜터 질의응답</option>
+            <option value="외부 학원/과외/보충">외부 학원/과외/보충</option>
+            <option value="자료수령">자료수령</option>
+            <option value="가족 행사">가족 행사</option>
+            <option value="병원">병원</option>
+            <option value="식사">식사</option>
+            <option value="기타">기타</option>
             <option value="심야자습 신청">심야자습 신청</option>
             <option value="심야자습 취소">심야자습 취소</option>
-            <option value="기타">기타</option>
-            <!-- 그 외 사유들 -->
+            <option value="조퇴(컨디션난조)">조퇴(컨디션난조)</option>
+            <option value="지각">지각</option>
+            <option value="입/퇴실 미준수">입/퇴실 미준수</option>
+            <option value="핸드폰 미제출">핸드폰 미제출</option>
+            <option value="전자기기 무단사용">전자기기 무단사용</option>
+            <option value="핸드폰 무단사용">핸드폰 무단사용</option>
+            <option value="무단이탈">무단이탈</option>
+            <option value="타층/타관 무단출입">타층/타관 무단출입</option>
+            <option value="핸드폰/Wifi 무단반입">핸드폰/Wifi 무단반입</option>
+            <option value="무단결석">무단결석</option>
+            <option value="원내대화">원내대화</option>
+            <option value="무단지각">무단지각</option>
+            <option value="취침강제하원">취침강제하원</option>
+            <option value="음식물섭취">음식물섭취</option>
         </select>
 
         <div id="scoreDiv" class="score">
@@ -250,18 +241,14 @@
                 <option value="9">9점</option>
                 <option value="10">10점</option>
             </select>
+
         </div>
+
+        <label for="otherReason" id="otherReasonLabel" style="display:none;">기타 사유:</label>
+        <textarea id="otherReason" placeholder="기타 사유를 입력하세요" style="display:none; height: 100px;"></textarea>
 
         <button type="submit">제출</button>
     </form>
-
-    <!-- 커스텀 다이얼로그 -->
-    <div id="overlay"></div>
-    <div id="customDialog">
-        <div class="dialogContent" id="dialogMessage"></div>
-        <button id="dialogConfirmBtn">확인</button>
-        <button id="dialogCancelBtn">취소</button>
-    </div>
 
     <div id="result">
         <table id="moveList">
@@ -303,26 +290,20 @@
             });
         }
 
-        function showDialog(message, callback) {
-            document.getElementById('dialogMessage').innerText = message;
-            document.getElementById('customDialog').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
+        document.getElementById("reason").addEventListener("change", function() {
+            const value = this.value;
+            const scoreReasons = ["무단이탈","전자기기 무단사용","핸드폰/Wifi 무단반입","핸드폰 무단사용","무단결석","타층/타관 무단출입","원내대화","무단지각","취침강제하원","음식물섭취","입/퇴실 미준수","핸드폰 미제출"];
+            document.getElementById("scoreDiv").style.display = scoreReasons.includes(value) ? "block" : "none";
 
-            document.getElementById('dialogConfirmBtn').onclick = function() {
-                callback(true);
-                closeDialog();
-            };
-
-            document.getElementById('dialogCancelBtn').onclick = function() {
-                callback(false);
-                closeDialog();
-            };
-        }
-
-        function closeDialog() {
-            document.getElementById('customDialog').style.display = 'none';
-            document.getElementById('overlay').style.display = 'none';
-        }
+            if (value === "기타") {
+                document.getElementById("otherReason").style.display = "block";
+                document.getElementById("otherReasonLabel").style.display = "block";
+            } else {
+                document.getElementById("otherReason").style.display = "none";
+                document.getElementById("otherReasonLabel").style.display = "none";
+                document.getElementById("errorMessage").style.display = "none";
+            }
+        });
 
         document.getElementById("moveForm").addEventListener("submit", function(event) {
             event.preventDefault();
@@ -334,25 +315,21 @@
             const otherReason = document.getElementById("otherReason").value;
             const score = parseInt(document.getElementById("score").value) || null;
 
-            // 심야자습 신청/취소 전용 확인
+            // 심야자습 전용 체크
             if (reason === "심야자습 신청" || reason === "심야자습 취소") {
                 if (!building || !seatNumber || !returnTime) {
                     alert("관, 좌석번호, 희망교시는 반드시 입력해야 합니다.");
                     return;
                 }
-                const confirmMessage = `관: ${building}\n좌석번호: ${seatNumber}\n희망교시: ${returnTime}\n사유: ${reason}\n\n제출하시겠습니까?`;
-
-                showDialog(confirmMessage, function(confirmed) {
-                    if (confirmed) {
-                        submitForm(building, seatNumber, returnTime, reason, score);
-                    }
-                });
+                const confirmMsg = `관: ${building}\n좌석번호: ${seatNumber}\n희망교시: ${returnTime}\n사유: ${reason}\n\n제출하시겠습니까?`;
+                if (!confirm(confirmMsg)) return;
+            } else if (reason === "기타" && !otherReason.trim()) {
+                document.getElementById("errorMessage").style.display = "block";
+                return;
             } else {
-                submitForm(building, seatNumber, returnTime, reason, score);
+                document.getElementById("errorMessage").style.display = "none";
             }
-        });
 
-        function submitForm(building, seatNumber, returnTime, reason, score) {
             const now = new Date();
             const inputDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
             const inputTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
@@ -361,25 +338,27 @@
                 building,
                 seatNumber,
                 returnTime,
-                reason,
-                score,
+                reason: reason === "기타" ? otherReason : reason,
+                score: ["핸드폰 미제출","전자기기 무단사용","핸드폰 무단사용","타층/타관 무단출입","무단결석/무단이탈","원내 대화"].includes(reason) ? score : null,
                 inputDate,
                 inputTime
             };
 
             moveList.push(moveData);
-            moveList.sort((a, b) => b.inputTime.localeCompare(a.inputTime));
+            moveList.sort((a,b) => b.inputTime.localeCompare(a.inputTime));
             refreshMoveList();
 
             document.getElementById("moveForm").reset();
             document.getElementById("scoreDiv").style.display = "none";
+            document.getElementById("otherReason").style.display = "none";
+            document.getElementById("otherReasonLabel").style.display = "none";
 
             // 서버 전송
             fetch('https://script.google.com/macros/s/AKfycbyO3_XoamjQF9F7pRazW9L_3P0TqEGH1pg2373ifiob9GJKwfjqV35f0KF053NHElyz/exec', {
                 method: 'POST',
                 body: JSON.stringify(moveData)
             });
-        }
+        });
 
         function resetTable() {
             moveList = [];
@@ -388,3 +367,5 @@
     </script>
 </body>
 </html>
+
+
