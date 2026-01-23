@@ -399,11 +399,12 @@
                 // 팝업창 띄우기
                 document.getElementById("popup").style.display = "block";
 
+                // 이전 이벤트 리스너 제거 (중복 방지)
+                const popupSubmitButton = document.getElementById("popupSubmitButton");
+                popupSubmitButton.removeEventListener("click", handlePopupSubmit);
+
                 // "제출" 버튼 클릭 시
-                document.getElementById("popupSubmitButton").addEventListener("click", function() {
-                    submitMoveData(building, seatNumber, returnTime, reason, otherReason, score);
-                    document.getElementById("popup").style.display = "none"; // 팝업 닫기
-                });
+                popupSubmitButton.addEventListener("click", handlePopupSubmit);
 
                 // "취소" 버튼 클릭 시
                 document.getElementById("popupCancelButton").addEventListener("click", function() {
@@ -419,41 +420,53 @@
             }
         });
 
-        // 이동 데이터 제출 함수
+        // 팝업 제출 버튼 클릭 시 처리
+        function handlePopupSubmit() {
+            const building = document.getElementById("building").value;
+            const seatNumber = document.getElementById("seatNumber").value + document.getElementById("seatNumber2").value;
+            const returnTime = document.getElementById("returnTime").value;
+            const reason = document.getElementById("reason").value;
+            const otherReason = document.getElementById("otherReason").value;
+            const score = parseInt(document.getElementById("score").value) || null;
+
+            submitMoveData(building, seatNumber, returnTime, reason, otherReason, score);
+
+            document.getElementById("popup").style.display = "none"; // 팝업 닫기
+        }
+
+        // 이동일지 데이터 제출
         function submitMoveData(building, seatNumber, returnTime, reason, otherReason, score) {
-            const now = new Date();
-            const inputDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-            const inputTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+            const currentDate = new Date();
+            const inputDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+            const inputTime = `${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
+
+            // 중복 입력 방지
+            const existingEntry = moveList.find(item => item.building === building && item.seatNumber === seatNumber && item.returnTime === returnTime && item.reason === reason);
+            if (existingEntry) {
+                alert("이미 제출된 데이터가 있습니다.");
+                return;
+            }
 
             const moveData = {
                 building,
                 seatNumber,
                 returnTime,
-                reason: reason === "기타" ? otherReason : reason,
-                score: ["핸드폰 미제출","전자기기 무단사용","핸드폰 무단사용","타층/타관 무단출입","무단결석/무단이탈","원내 대화"].includes(reason) ? score : null,
+                reason,
                 inputDate,
-                inputTime
+                inputTime,
+                score,
             };
 
             moveList.push(moveData);
-            moveList.sort((a,b) => b.inputTime.localeCompare(a.inputTime));
             refreshMoveList();
-
-            document.getElementById("moveForm").reset();
-            document.getElementById("scoreDiv").style.display = "none";
-            document.getElementById("otherReason").style.display = "none";
-            document.getElementById("otherReasonLabel").style.display = "none";
-
-            // 서버 전송
-            fetch('https://script.google.com/macros/s/AKfycbyO3_XoamjQF9F7pRazW9L_3P0TqEGH1pg2373ifiob9GJKwfjqV35f0KF053NHElyz/exec', {
-                method: 'POST',
-                body: JSON.stringify(moveData)
-            });
         }
 
+        // 테이블 초기화
         function resetTable() {
-            moveList = [];
-            refreshMoveList();
+            if (confirm("정말로 테이블을 초기화하시겠습니까?")) {
+                moveList = [];
+                refreshMoveList();
+            }
         }
     </script>
 </body>
