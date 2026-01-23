@@ -100,6 +100,52 @@
         .score {
             display: none;
         }
+
+        /* 팝업 스타일 */
+        #confirmationPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            font-size: 18px;
+            z-index: 1000;
+        }
+
+        #confirmationPopup button {
+            padding: 10px 20px;
+            background-color: #336699;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+
+        #confirmationPopup button:hover {
+            background-color: #28597b;
+        }
+
+        /* 오버레이 */
+        #confirmationOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
         @media (max-width: 768px) {
             form { padding: 15px; }
             button { width: 100%; }
@@ -197,7 +243,6 @@
             <option value="복귀안함">복귀안함</option>
         </select>
 
-
         <label for="reason">이동사유:</label>
         <select id="reason" required>
             <option value="">선택하세요</option>
@@ -241,7 +286,6 @@
                 <option value="9">9점</option>
                 <option value="10">10점</option>
             </select>
-
         </div>
 
         <label for="otherReason" id="otherReasonLabel" style="display:none;">기타 사유:</label>
@@ -268,6 +312,15 @@
     </div>
 
     <div class="error" id="errorMessage">기타 사유를 입력해주세요.</div>
+
+    <!-- 오버레이 (배경 어두운 부분) -->
+    <div id="confirmationOverlay"></div>
+
+    <!-- 팝업 -->
+    <div id="confirmationPopup">
+        <p id="confirmationMessage">내용을 여기에 표시합니다.</p>
+        <button id="confirmButton">확인</button>
+    </div>
 
     <script>
         let moveList = [];
@@ -305,6 +358,24 @@
             }
         });
 
+        // 팝업 관련 요소
+        const confirmationPopup = document.getElementById("confirmationPopup");
+        const confirmationOverlay = document.getElementById("confirmationOverlay");
+
+        // 팝업을 띄우는 함수
+        function showConfirmationPopup(message) {
+            const messageElement = document.getElementById("confirmationMessage");
+            messageElement.textContent = message; // 메시지 설정
+            confirmationPopup.style.display = "block";
+            confirmationOverlay.style.display = "block";
+        }
+
+        // 팝업을 닫는 함수
+        function hideConfirmationPopup() {
+            confirmationPopup.style.display = "none";
+            confirmationOverlay.style.display = "none";
+        }
+
         document.getElementById("moveForm").addEventListener("submit", function(event) {
             event.preventDefault();
 
@@ -322,8 +393,14 @@
                     return;
                 }
                 const confirmMsg = `관: ${building}\n좌석번호: ${seatNumber}\n희망교시: ${returnTime}\n사유: ${reason}\n\n제출하시겠습니까?`;
-                if (!confirm(confirmMsg)) return;
-            } else if (reason === "기타" && !otherReason.trim()) {
+
+                // 팝업 띄우기
+                showConfirmationPopup(confirmMsg);
+                return;
+            }
+
+            // 기타 조건 처리 코드...
+            if (reason === "기타" && !otherReason.trim()) {
                 document.getElementById("errorMessage").style.display = "block";
                 return;
             } else {
@@ -360,6 +437,11 @@
             });
         });
 
+        // 팝업 확인 버튼 클릭 시 팝업 닫기
+        document.getElementById("confirmButton").addEventListener("click", function() {
+            hideConfirmationPopup();
+        });
+
         function resetTable() {
             moveList = [];
             refreshMoveList();
@@ -367,5 +449,3 @@
     </script>
 </body>
 </html>
-
-
