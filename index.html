@@ -340,6 +340,22 @@
     <script>
     let moveList = [];
 
+         // 이동사유에 따른 고정 점수 설정
+    const fixedScores = {
+        "무단이탈": 10,
+        "전자기기 무단사용": 10,
+        "핸드폰/Wifi 무단반입": 10,
+        "핸드폰 무단사용": 7,
+        "무단결석": 7,
+        "타층/타관 무단출입": 5,
+        "원내대화": 5,
+        "무단지각": 5,
+        "취침강제하원": 3,
+        "음식물섭취": 3,
+        "입/퇴실 미준수": 3,
+        "핸드폰 미제출": 10,
+    };
+
     function refreshMoveList() {
         const tableBody = document.querySelector("#moveList tbody");
         tableBody.innerHTML = "";
@@ -475,4 +491,5 @@
         refreshMoveList();
     }
 </script>
+
 
