@@ -229,8 +229,18 @@
         <div id="scoreDiv" class="score">
             <label for="score">점수 (1~10점):</label>
             <select id="score">
-                ${Array.from({length:10}, (_,i)=>`<option value="${i+1}">${i+1}점</option>`).join('')}
+                <option value="1">1점</option>
+                <option value="2">2점</option>
+                <option value="3">3점</option>
+                <option value="4">4점</option>
+                <option value="5">5점</option>
+                <option value="6">6점</option>
+                <option value="7">7점</option>
+                <option value="8">8점</option>
+                <option value="9">9점</option>
+                <option value="10">10점</option>
             </select>
+
         </div>
 
         <label for="otherReason" id="otherReasonLabel" style="display:none;">기타 사유:</label>
@@ -356,4 +366,5 @@
     </script>
 </body>
 </html>
+
 
