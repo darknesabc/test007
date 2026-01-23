@@ -379,23 +379,30 @@
                 return;
             }
 
-            const moveData = {
+                        const moveData = {
                 building,
                 seatNumber,
                 returnTime,
                 reason: reason === "기타" ? otherReason : reason,
-                score: scoreReasons.includes(reason) ? score : null,
-                inputDate: new Date().toLocaleDateString(),
-                inputTime: new Date().toLocaleTimeString()
+                score: ["핸드폰 미제출","전자기기 무단사용","핸드폰 무단사용","타층/타관 무단출입","무단결석/무단이탈","원내 대화"].includes(reason) ? score : null,
+                inputDate,
+                inputTime
             };
 
             moveList.push(moveData);
+            moveList.sort((a,b) => b.inputTime.localeCompare(a.inputTime));
             refreshMoveList();
 
             document.getElementById("moveForm").reset();
             document.getElementById("scoreDiv").style.display = "none";
             document.getElementById("otherReason").style.display = "none";
             document.getElementById("otherReasonLabel").style.display = "none";
+
+            // 서버 전송
+            fetch('https://script.google.com/macros/s/AKfycbyO3_XoamjQF9F7pRazW9L_3P0TqEGH1pg2373ifiob9GJKwfjqV35f0KF053NHElyz/exec', {
+                method: 'POST',
+                body: JSON.stringify(moveData)
+            });
         });
 
         function resetTable() {
@@ -405,3 +412,5 @@
     </script>
 </body>
 </html>
+
+
