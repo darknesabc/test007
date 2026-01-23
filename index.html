@@ -375,19 +375,28 @@
     }
 
     document.getElementById("reason").addEventListener("change", function() {
-        const value = this.value;
-        const scoreReasons = ["무단이탈","전자기기 무단사용","핸드폰/Wifi 무단반입","핸드폰 무단사용","무단결석","타층/타관 무단출입","원내대화","무단지각","취침강제하원","음식물섭취","입/퇴실 미준수","핸드폰 미제출"];
-        document.getElementById("scoreDiv").style.display = scoreReasons.includes(value) ? "block" : "none";
+    const value = this.value;
+    const scoreReasons = ["무단이탈","전자기기 무단사용","핸드폰/Wifi 무단반입","핸드폰 무단사용","무단결석","타층/타관 무단출입","원내대화","무단지각","취침강제하원","음식물섭취","입/퇴실 미준수","핸드폰 미제출"];
+    
+    // 점수 div 보이기/숨기기
+    document.getElementById("scoreDiv").style.display = scoreReasons.includes(value) ? "block" : "none";
 
-        if (value === "기타") {
-            document.getElementById("otherReason").style.display = "block";
-            document.getElementById("otherReasonLabel").style.display = "block";
-        } else {
-            document.getElementById("otherReason").style.display = "none";
-            document.getElementById("otherReasonLabel").style.display = "none";
-            document.getElementById("errorMessage").style.display = "none";
-        }
-    });
+    if (value === "기타") {
+        document.getElementById("otherReason").style.display = "block";
+        document.getElementById("otherReasonLabel").style.display = "block";
+    } else {
+        document.getElementById("otherReason").style.display = "none";
+        document.getElementById("otherReasonLabel").style.display = "none";
+        document.getElementById("errorMessage").style.display = "none";
+    }
+
+    // 이동사유에 따른 고정 점수 적용
+    if (fixedScores[value]) {
+        document.getElementById("score").value = fixedScores[value];  // 고정 점수를 설정
+    } else {
+        document.getElementById("score").value = '';  // 점수 필드 초기화
+    }
+});
 
     document.getElementById("moveForm").addEventListener("submit", function(event) {
         event.preventDefault();
@@ -491,5 +500,6 @@
         refreshMoveList();
     }
 </script>
+
 
 
