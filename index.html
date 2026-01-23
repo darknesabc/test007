@@ -272,7 +272,7 @@
 
         <div id="scoreDiv" class="score">
             <label for="score">점수 (1~10점):</label>
-            <select id="score">
+            <select id="score" required>
                 <option value="1">1점</option>
                 <option value="2">2점</option>
                 <option value="3">3점</option>
@@ -336,7 +336,9 @@
             const value = this.value;
             const scoreReasons = [
                 "무단이탈", "전자기기 무단사용", "핸드폰/Wifi 무단반입", "핸드폰 무단사용", "무단결석", "타층/타관 무단출입", 
-                "원내대화", "무단지각", "취침강제하원", "음식물섭취", "입/퇴실 미준수", "핸드폰 미제출"];
+                "원내대화", "무단지각", "취침강제하원", "음식물섭취", "입/퇴실 미준수", "핸드폰 미제출", "조퇴(컨디션난조)",
+                "지각"
+            ];
 
             document.getElementById("scoreDiv").style.display = scoreReasons.includes(value) ? "block" : "none";
 
@@ -367,6 +369,16 @@
                 document.getElementById("errorMessage").style.display = "none";
             }
 
+            // 점수 입력 여부 체크
+            if (score === null && [
+                "무단이탈", "전자기기 무단사용", "핸드폰/Wifi 무단반입", "핸드폰 무단사용", "무단결석", 
+                "타층/타관 무단출입", "원내대화", "무단지각", "취침강제하원", "음식물섭취", "입/퇴실 미준수", 
+                "핸드폰 미제출", "조퇴(컨디션난조)", "지각"
+            ].includes(reason)) {
+                alert("점수를 입력해주세요.");
+                return;
+            }
+
             const moveData = {
                 building,
                 seatNumber,
@@ -393,4 +405,3 @@
     </script>
 </body>
 </html>
-
