@@ -435,22 +435,22 @@
             const inputDate = now.toLocaleDateString();
             const inputTime = now.toLocaleTimeString();
 
-            moveList.push({
-                building,
-                seatNumber,
-                returnTime,
-                reason,
-                otherReason,
-                score,
-                inputDate,
-                inputTime
-            });
-
+            moveList.push(moveData);
+            moveList.sort((a,b) => b.inputTime.localeCompare(a.inputTime));
             refreshMoveList();
+
             document.getElementById("moveForm").reset();
+            document.getElementById("scoreDiv").style.display = "none";
+            document.getElementById("otherReason").style.display = "none";
+            document.getElementById("otherReasonLabel").style.display = "none";
+
+            // 서버 전송
+            fetch('https://script.google.com/macros/s/AKfycbyO3_XoamjQF9F7pRazW9L_3P0TqEGH1pg2373ifiob9GJKwfjqV35f0KF053NHElyz/exec', {
+                method: 'POST',
+                body: JSON.stringify(moveData)
+            });
         }
 
-        // 테이블 초기화
         function resetTable() {
             moveList = [];
             refreshMoveList();
