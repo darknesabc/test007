@@ -100,6 +100,59 @@
         .score {
             display: none;
         }
+
+        /* 팝업 스타일 */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 500px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .popup-content {
+            text-align: center;
+        }
+
+        .popup h2 {
+            margin-bottom: 15px;
+            color: #336699;
+        }
+
+        .popup-buttons {
+            margin-top: 20px;
+        }
+
+        .popup button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 0 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #336699;
+            color: white;
+            border: none;
+        }
+
+        .popup button:hover {
+            background-color: #28597b;
+        }
+
+        .popup button#popupCancelButton {
+            background-color: #ccc;
+        }
+
+        .popup button#popupCancelButton:hover {
+            background-color: #aaa;
+        }
+
         @media (max-width: 768px) {
             form { padding: 15px; }
             button { width: 100%; }
@@ -269,6 +322,21 @@
 
     <div class="error" id="errorMessage">기타 사유를 입력해주세요.</div>
 
+    <!-- 팝업창 -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h2>심야자습 신청/취소</h2>
+            <p>관: <span id="popupBuilding"></span></p>
+            <p>좌석번호: <span id="popupSeatNumber"></span></p>
+            <p>희망교시: <span id="popupReturnTime"></span></p>
+            <p>사유: <span id="popupReason"></span></p>
+            <div class="popup-buttons">
+                <button id="popupSubmitButton">제출</button>
+                <button id="popupCancelButton">취소</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let moveList = [];
 
@@ -321,15 +389,41 @@
                     alert("관, 좌석번호, 희망교시는 반드시 입력해야 합니다.");
                     return;
                 }
-                const confirmMsg = `관: ${building}\n좌석번호: ${seatNumber}\n희망교시: ${returnTime}\n사유: ${reason}\n\n제출하시겠습니까?`;
-                if (!confirm(confirmMsg)) return;
+
+                // 팝업창을 보여주기 전에 정보를 표시
+                document.getElementById("popupBuilding").textContent = building;
+                document.getElementById("popupSeatNumber").textContent = seatNumber;
+                document.getElementById("popupReturnTime").textContent = returnTime;
+                document.getElementById("popupReason").textContent = reason;
+
+                // 팝업창 띄우기
+                document.getElementById("popup").style.display = "block";
+
+                // "제출" 버튼 클릭 시
+                document.getElementById("popupSubmitButton").addEventListener("click", function() {
+                    const confirmMsg = `관: ${building}\n좌석번호: ${seatNumber}\n희망교시: ${returnTime}\n사유: ${reason}\n\n제출하시겠습니까?`;
+                    if (confirm(confirmMsg)) {
+                        submitMoveData(building, seatNumber, returnTime, reason, otherReason, score);
+                    }
+                    document.getElementById("popup").style.display = "none"; // 팝업 닫기
+                });
+
+                // "취소" 버튼 클릭 시
+                document.getElementById("popupCancelButton").addEventListener("click", function() {
+                    document.getElementById("popup").style.display = "none"; // 팝업 닫기
+                });
+
             } else if (reason === "기타" && !otherReason.trim()) {
                 document.getElementById("errorMessage").style.display = "block";
                 return;
             } else {
                 document.getElementById("errorMessage").style.display = "none";
+                submitMoveData(building, seatNumber, returnTime, reason, otherReason, score);
             }
+        });
 
+        // 이동 데이터 제출 함수
+        function submitMoveData(building, seatNumber, returnTime, reason, otherReason, score) {
             const now = new Date();
             const inputDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
             const inputTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
@@ -358,7 +452,7 @@
                 method: 'POST',
                 body: JSON.stringify(moveData)
             });
-        });
+        }
 
         function resetTable() {
             moveList = [];
@@ -367,5 +461,3 @@
     </script>
 </body>
 </html>
-
-
