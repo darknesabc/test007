@@ -218,7 +218,8 @@
             <option value="전자기기 무단사용">전자기기 무단사용</option>
             <option value="핸드폰 무단사용">핸드폰 무단사용</option>
             <option value="무단이탈">무단이탈</option>
-            <option value="핸드폰/Wifi 반입">핸드폰/Wifi 반입</option>
+            <option value="타층/타관 무단출입">타층/타관 무단출입</option>
+            <option value="핸드폰/Wifi 무단반입">핸드폰/Wifi 무단반입</option>
             <option value="무단결석">무단결석</option>
             <option value="원내대화">원내대화</option>
             <option value="무단지각">무단지각</option>
@@ -291,7 +292,7 @@
 
         document.getElementById("reason").addEventListener("change", function() {
             const value = this.value;
-            const scoreReasons = ["핸드폰 미제출","전자기기 무단사용","핸드폰 무단사용","타층/타관 무단출입","무단결석/무단이탈","원내 대화"];
+            const scoreReasons = ["무단이탈","전자기기 무단사용","핸드폰/Wifi 무단반입","핸드폰 무단사용","무단결석","타층/타관 무단출입","원내대화","무단지각","취침강제하원","음식물섭취","입/퇴실 미준수","핸드폰 미제출"];
             document.getElementById("scoreDiv").style.display = scoreReasons.includes(value) ? "block" : "none";
 
             if (value === "기타") {
@@ -366,5 +367,6 @@
     </script>
 </body>
 </html>
+
 
 
