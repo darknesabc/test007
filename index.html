@@ -153,6 +153,11 @@
             background-color: #aaa;
         }
 
+        /* ✅ 안내 팝업은 확인 버튼만 있을 수도 있으니 가운데 정렬 유지 */
+        #alertPopup .popup-buttons button {
+            margin: 0;
+        }
+
         @media (max-width: 768px) {
             form { padding: 15px; }
             button { width: 100%; }
@@ -170,6 +175,7 @@
 <body>
     <h1>러셀 이동일지&교육점수 작성</h1>
     <button id="resetButton" onclick="resetTable()">테이블 초기화</button>
+
     <form id="moveForm">
         <label for="building">관:</label>
         <select id="building" required>
@@ -320,7 +326,7 @@
 
     <div class="error" id="errorMessage">기타 사유를 입력해주세요.</div>
 
-    <!-- 팝업창 -->
+    <!-- ✅ 심야자습 신청/취소 팝업창 -->
     <div id="popup" class="popup">
         <div class="popup-content">
             <h2>심야자습 신청/취소</h2>
@@ -331,6 +337,17 @@
             <div class="popup-buttons">
                 <button id="popupSubmitButton">제출</button>
                 <button id="popupCancelButton">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ 중앙 안내 팝업(확인 버튼 1개) -->
+    <div id="alertPopup" class="popup">
+        <div class="popup-content">
+            <h2>안내</h2>
+            <p id="alertPopupMessage" style="line-height:1.6;"></p>
+            <div class="popup-buttons">
+                <button id="alertPopupOkButton">확인</button>
             </div>
         </div>
     </div>
@@ -375,6 +392,16 @@
 
         return false;
     }
+
+    // ✅ 중앙 안내 팝업 띄우기/닫기
+    function showCenterAlert(message) {
+        document.getElementById("alertPopupMessage").textContent = message;
+        document.getElementById("alertPopup").style.display = "block";
+    }
+    function closeCenterAlert() {
+        document.getElementById("alertPopup").style.display = "none";
+    }
+    document.getElementById("alertPopupOkButton").addEventListener("click", closeCenterAlert);
 
     // 이동사유에 따른 고정 점수 설정
     const fixedScores = {
@@ -451,18 +478,18 @@
         // 심야자습 전용 체크
         if (reason === "심야자습 신청" || reason === "심야자습 취소") {
 
-            // ✅ 토/일 + 특정 날짜 차단
+            // ✅ 토/일 + 특정 날짜 차단 (alert 대신 중앙 팝업)
             if (isNightStudyBlocked()) {
-                alert("토요일·일요일 및 지정된 날짜에는 심야자습 신청/취소가 불가능합니다.");
+                showCenterAlert("토요일,일요일 및 지정된 날짜에는 심야자습 신청/취소가 불가능합니다.");
                 return;
             }
 
             if (!building || !seatNumber || !returnTime) {
-                alert("관, 좌석번호, 희망교시는 반드시 입력해야 합니다.");
+                showCenterAlert("관, 좌석번호, 희망교시는 반드시 입력해야 합니다.");
                 return;
             }
 
-            // 팝업창을 보여주기 전에 정보를 표시
+            // 팝업창 정보를 표시
             document.getElementById("popupBuilding").textContent = building;
             document.getElementById("popupSeatNumber").textContent = seatNumber;
             document.getElementById("popupReturnTime").textContent = returnTime;
@@ -471,15 +498,13 @@
             // 팝업창 띄우기
             document.getElementById("popup").style.display = "block";
 
-            // 팝업의 제출 및 취소 버튼에 이벤트 리스너를 한번만 등록
+            // 팝업 버튼 리스너 등록
             const popupSubmitButton = document.getElementById("popupSubmitButton");
             const popupCancelButton = document.getElementById("popupCancelButton");
 
-            // "제출" 버튼 클릭 시
             popupSubmitButton.removeEventListener("click", handlePopupSubmit);
             popupSubmitButton.addEventListener("click", handlePopupSubmit);
 
-            // "취소" 버튼 클릭 시
             popupCancelButton.removeEventListener("click", handlePopupCancel);
             popupCancelButton.addEventListener("click", handlePopupCancel);
 
