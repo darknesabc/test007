@@ -502,7 +502,7 @@
             seatNumber,
             returnTime,
             reason: reason === "기타" ? otherReason : reason,
-            score: ["핸드폰 미제출","전자기기 무단사용","핸드폰 무단사용","타층/타관 무단출입","무단결석/무단이탈","원내 대화"].includes(reason) ? score : null,
+            score: ["입/퇴실 미준수","핸드폰 미제출","전자기기 무단사용","핸드폰 무단사용","무단이탈","타층/타관 무단출입","핸드폰/Wifi 무단반입","무단결석","원내대화","무단지각","취침강제하원","음식물섭취",].includes(reason) ? score : null,
             inputDate,
             inputTime
         };
@@ -533,6 +533,7 @@
     </script>
 </body>
 </html>
+
 
 
 
